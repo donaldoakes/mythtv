@@ -72,7 +72,9 @@ class MUI_PUBLIC MythUIButtonTree : public MythUIType
     uint m_currentDepth              {0};
     int  m_depthOffset               {0};
     uint m_oldDepth                  {0};
+    QString m_columnWidths; // dho
     QList<MythUIButtonList*> m_buttonlists;
+    QList<MythUIButtonList*> m_listColumns; // dho
     MythUIButtonList *m_listTemplate {nullptr};
     MythUIButtonList *m_activeList   {nullptr};
     uint              m_activeListID {0};

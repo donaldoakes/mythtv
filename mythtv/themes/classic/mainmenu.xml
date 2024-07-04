@@ -9,14 +9,6 @@
     </button>
 
     <button>
-        <type>NET_VIDEO</type>
-        <text>Internet Video</text>
-        <action>MENU netvisionmenu.xml</action>
-        <description>Search and browse internet video sites</description>
-        <depends>mythnetvision</depends>
-    </button>
-
-    <button>
         <type>MUSIC</type>
         <text>Music</text>
         <description>Play music files and internet radio streams</description>
@@ -32,6 +24,14 @@
     </button>
 
     <button>
+        <type>NET_VIDEO</type>
+        <text>Internet Video</text>
+        <action>MENU netvisionmenu.xml</action>
+        <description>Search and browse internet video sites</description>
+        <depends>mythnetvision</depends>
+    </button>
+
+    <button>
         <type>STREAM</type>
         <text>Play online streams</text>
         <action>PLUGIN mythstream</action>
@@ -40,7 +40,7 @@
 
     <button>
         <type>IMAGES</type>
-        <text>Images</text>
+        <text>Photos</text>
         <description>Look at pictures</description>
         <action>JUMP Gallery Default</action>
     </button>
@@ -79,7 +79,7 @@
 
     <button>
         <type>NEWS</type>
-        <text>News Feeds</text>
+        <text>News</text>
         <description>Keep up with the news</description>
         <action>PLUGIN mythnews</action>
         <depends>mythnews</depends>
@@ -102,7 +102,7 @@
 
     <button>
         <type>ARCHIVE</type>
-        <text>Archive Files</text>
+        <text>Archive</text>
         <description>Backup a program to DVD</description>
         <action>PLUGIN mytharchive</action>
         <depends>mytharchive</depends>

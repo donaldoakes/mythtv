@@ -316,21 +316,22 @@ bool VideoScannerThread::updateDB(const FileCheckList &add, const PurgeList &rem
 
             // Are we sure this needs adding?  Let's check our Hash list.
             QString hash = VideoMetadata::VideoFileHash(p->first, p->second.host);
+            printf("Ignoring db hash...\n"); // dho
             if (hash != "NULL" && !hash.isEmpty())
-            {
-                id = VideoMetadata::UpdateHashedDBRecord(hash, p->first, p->second.host);
-                if (id != -1)
-                {
-                    // Whew, that was close.  Let's remove that thing from
-                    // our purge list, too.
-                    LOG(VB_GENERAL, LOG_ERR,
-                        QString("Hash %1 already exists in the "
-                                "database, updating record %2 "
-                                "with new filename %3")
-                            .arg(hash).arg(id).arg(p->first));
-                    m_movList.append(id);
-                }
-            }
+            // {
+            //     id = VideoMetadata::UpdateHashedDBRecord(hash, p->first, p->second.host);
+            //     if (id != -1)
+            //     {
+            //         // Whew, that was close.  Let's remove that thing from
+            //         // our purge list, too.
+            //         LOG(VB_GENERAL, LOG_ERR,
+            //             QString("Hash %1 already exists in the "
+            //                     "database, updating record %2 "
+            //                     "with new filename %3")
+            //                 .arg(hash).arg(id).arg(p->first));
+            //         m_movList.append(id);
+            //     }
+            // }
             if (id == -1)
             {
                 VideoMetadata newFile(

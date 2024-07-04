@@ -1204,6 +1204,8 @@ static void TVMenuCallback([[maybe_unused]] void *data, QString &selection)
         RunVideoScreen(VideoDialog::DLG_TREE);
     else if (sel == "gallery")
         RunVideoScreen(VideoDialog::DLG_GALLERY);
+    else if (sel == "gallery2") // dho
+        RunVideoScreen(VideoDialog::DLG_GALLERY2);
     else if (sel == "disc_play")
     {
         playDisc();
@@ -1856,7 +1858,7 @@ static bool WasAutomaticStart(void)
 }
 
 // from https://www.raspberrypi.org/forums/viewtopic.php?f=33&t=16897
-// The old way of revoking root with setuid(getuid()) 
+// The old way of revoking root with setuid(getuid())
 // causes system hang in certain cases on raspberry pi
 
 static int revokeRoot (void)

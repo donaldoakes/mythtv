@@ -57,6 +57,8 @@ class VideoList
 
     void InvalidateCache();
 
+    unsigned int ltype; // dho
+
   private:
     class VideoListImp *m_imp;
 };

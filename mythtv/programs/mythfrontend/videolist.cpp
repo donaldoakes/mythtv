@@ -421,6 +421,8 @@ class VideoListImp
         m_metadata.setList(ml);
     }
 
+    unsigned int ltype; // dho
+
   private:
     void sort_view_data(bool flat_list);
     void fillMetadata(metadata_list_type whence);
@@ -466,6 +468,7 @@ MythGenericTree *VideoList::buildVideoList(
     int group_type, const ParentalLevel &parental_level,
     bool include_updirs)
 {
+    m_imp->ltype = ltype; // dho
     return m_imp->buildVideoList(filebrowser, flatlist,
                                  group_type, parental_level, include_updirs);
 }
@@ -950,7 +953,15 @@ void VideoListImp::buildTVList(void)
 void VideoListImp::buildDbList()
 {
     metadata_list ml;
-    VideoMetadataListManager::loadAllFromDatabase(ml);
+
+    // dho
+    if (ltype == 2)
+      VideoMetadataListManager::loadAllFromDatabase(ml, QString("WHERE filename LIKE 'Pre-Code/%'"));
+    else if (ltype == 16)
+      VideoMetadataListManager::loadAllFromDatabase(ml, QString("WHERE filename LIKE 'Horror/%'"));
+    else
+      VideoMetadataListManager::loadAllFromDatabase(ml);
+
     m_metadata.setList(ml);
 
     metadata_view_list mlist;

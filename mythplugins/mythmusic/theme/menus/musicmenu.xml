@@ -1,10 +1,10 @@
 <mythmenu name="MUSIC">
 
    <button>
-      <type>MUSIC_PLAY</type>
+      <type>MUSIC_PLAYLIST</type>
       <text>Play Music</text>
-      <description>Play music files</description>
-      <action>MUSIC_PLAY</action>
+      <description>Choose tracks to play</description>
+      <action>MUSIC_CREATE_PLAYLIST</action>
    </button>
 
    <button>
@@ -12,13 +12,6 @@
       <text>Play Radio Streams</text>
       <description>Play an internet radio stream</description>
       <action>STREAM_PLAY</action>
-   </button>
-
-   <button>
-      <type>MUSIC_PLAYLIST</type>
-      <text>Select Music</text>
-      <description>Choose which tracks to play</description>
-      <action>MUSIC_CREATE_PLAYLIST</action>
    </button>
 
    <button>

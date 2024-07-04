@@ -529,6 +529,13 @@ namespace
             tmp["watchedstate"] = WatchedToState(metadata->GetWatched());
 
             tmp["videolevel"] = ParentalLevelToState(metadata->GetShowLevel());
+
+            // dho
+            int filenameLen = metadata->GetFilename().length();
+            int lastSlash = metadata->GetFilename().lastIndexOf("/");
+            QString justName = metadata->GetFilename().right(filenameLen - lastSlash - 1);
+            int lastDot = justName.lastIndexOf(".");
+            dest.handleText("fulltitle", justName.left(lastDot));
         }
 
         struct helper
@@ -946,7 +953,7 @@ void VideoDialog::SavePosition(void)
         if (node)
             m_d->m_lastTreeNodePath = node->getRouteByString().join("\n");
     }
-    else if (m_d->m_type == DLG_BROWSER || m_d->m_type == DLG_GALLERY)
+    else if (m_d->m_type == DLG_BROWSER || m_d->m_type == DLG_GALLERY || m_d->m_type == DLG_GALLERY2) // dho
     {
         MythUIButtonListItem *item = m_videoButtonList->GetItemCurrent();
         if (item)
@@ -986,6 +993,9 @@ bool VideoDialog::Create()
             break;
         case DLG_GALLERY:
             windowName = "gallery";
+            break;
+        case DLG_GALLERY2: // dho
+            windowName = "gallery2";
             break;
         case DLG_TREE:
             windowName = "tree";
@@ -1220,7 +1230,7 @@ void VideoDialog::loadData()
             {
                 QStringList lastTreeNodePath = gCoreContext->GetSetting("mythvideo.VideoTreeLastActive", "").split("\n");
 
-                if (m_d->m_type == DLG_GALLERY || m_d->m_type == DLG_BROWSER)
+                if (m_d->m_type == DLG_GALLERY || m_d->m_type == DLG_GALLERY2 || m_d->m_type == DLG_BROWSER) // dho
                 {
                     if (!lastTreeNodePath.isEmpty())
                     {
@@ -1383,11 +1393,14 @@ void VideoDialog::fetchVideos()
 {
     m_d->m_playbackState.Initialize();
     MythGenericTree *oldroot = m_d->m_rootNode;
+
+    m_d->m_videoList->ltype = m_d->m_type; // dho
+
     if (!m_d->m_treeLoaded)
     {
         m_d->m_rootNode = m_d->m_videoList->buildVideoList(m_d->m_isFileBrowser,
                 m_d->m_isFlatList, m_d->m_groupType,
-                m_d->m_parentalLevel.GetLevel(), true);
+                m_d->m_parentalLevel.GetLevel(), false); // dho
     }
     else
     {
@@ -2343,7 +2356,7 @@ void VideoDialog::UpdateText(MythUIButtonListItem *item)
 /** \fn VideoDialog::UpdateWatchedState(MythUIButtonListItem *item)
  *  \brief Update the watched state for a given ButtonListItem from the database.
  *  \return void.
- * 
+ *
  *  The player could have updated the watched state of a video after watching.
  *  We load the metadata of the current item from the database and sync the
  *  watched state of the current item if it was changed by the player.
@@ -2528,6 +2541,10 @@ MythMenu* VideoDialog::CreateViewMenu()
 
     if (!(m_d->m_type & DLG_GALLERY))
         menu->AddItem(tr("Switch to Gallery View"), &VideoDialog::SwitchGallery);
+
+    // dho
+    if (!(m_d->m_type & DLG_GALLERY2))
+        menu->AddItem(tr("Switch to Gallery2 View"), &VideoDialog::SwitchGallery2);
 
     if (!(m_d->m_type & DLG_TREE))
         menu->AddItem(tr("Switch to List View"), &VideoDialog::SwitchTree);
@@ -2785,7 +2802,7 @@ void VideoDialog::handleSelect(MythUIButtonListItem *item)
         default:
         {
             bool doPlay = true;
-            if (m_d->m_type == DLG_GALLERY)
+            if (m_d->m_type == DLG_GALLERY || m_d->m_type == DLG_GALLERY2) // dho
             {
                 doPlay = !DoItemDetailShow();
             }
@@ -2812,6 +2829,12 @@ void VideoDialog::SwitchTree()
 void VideoDialog::SwitchGallery()
 {
     SwitchLayout(DLG_GALLERY, m_d->m_browse);
+}
+
+// dho
+void VideoDialog::SwitchGallery2()
+{
+    SwitchLayout(DLG_GALLERY2, m_d->m_browse);
 }
 
 /** \fn VideoDialog::SwitchBrowse()
