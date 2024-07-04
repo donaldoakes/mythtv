@@ -152,10 +152,15 @@ bool PlaylistEditorView::Create(void)
 
     treeNodeChanged(m_rootNode->getChildAt(0));
 
-    m_playlistTree->AssignTree(m_rootNode);
+    // dho
+    treeNodeChanged(m_rootNode->getChildAt(0)->getChildAt(0));
+    m_playlistTree->AssignTree(m_rootNode->getChildAt(0));
 
-    QStringList route = gCoreContext->GetSetting("MusicTreeLastActive", "").split("\n");
-    restoreTreePosition(route);
+    // dho m_playlistTree->AssignTree(m_rootNode);
+
+    // dho
+    // QStringList route = gCoreContext->GetSetting("MusicTreeLastActive", "").split("\n");
+    // restoreTreePosition(route);
 
     connect(m_playlistTree, &MythUIButtonTree::itemClicked,
             this, &PlaylistEditorView::treeItemClicked);
@@ -765,102 +770,125 @@ MythMenu* PlaylistEditorView::createSmartPlaylistMenu(void)
 void PlaylistEditorView::createRootNode(void )
 {
     if (!m_rootNode)
-        m_rootNode = new MusicGenericTree(nullptr, "Root Music Node");
+        m_rootNode = new MusicGenericTree(NULL, "Root Music Node"); // dho
 
-    auto *node = new MusicGenericTree(m_rootNode, tr("All Tracks"), "all tracks");
+    // dho
+    MusicGenericTree *node = new MusicGenericTree(m_rootNode, tr("Directory"), "directory");
     node->setDrawArrow(true);
+    // qt5
+    // node->SetData(qVariantFromValue(gMusicData->m_all_music->getAllMetadata()));
+    // qt6
     node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
 
-    node = new MusicGenericTree(m_rootNode, tr("Albums"), "albums");
-    node->setDrawArrow(true);
-    node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
+    // dho
 
-    node = new MusicGenericTree(m_rootNode, tr("Artists"), "artists");
-    node->setDrawArrow(true);
-    node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
+//     auto *node = new MusicGenericTree(m_rootNode, tr("All Tracks"), "all tracks");
+//     node->setDrawArrow(true);
+//     node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
 
-    node = new MusicGenericTree(m_rootNode, tr("Genres"), "genres");
-    node->setDrawArrow(true);
-    node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
-#if 0
-    node = new MusicGenericTree(m_rootNode, tr("Tags"), "tags");
-    node->setDrawArrow(true);
-    node->SetData(QVariant::fromValue(gMusicData->all_music->getAllMetadata()));
-#endif
-    node = new MusicGenericTree(m_rootNode, tr("Ratings"), "ratings");
-    node->setDrawArrow(true);
-    node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
+//     node = new MusicGenericTree(m_rootNode, tr("Albums"), "albums");
+//     node->setDrawArrow(true);
+//     node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
 
-    node = new MusicGenericTree(m_rootNode, tr("Years"), "years");
-    node->setDrawArrow(true);
-    node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
+//     node = new MusicGenericTree(m_rootNode, tr("Artists"), "artists");
+//     node->setDrawArrow(true);
+//     node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
 
-    node = new MusicGenericTree(m_rootNode, tr("Compilations"), "compilations");
-    node->setDrawArrow(true);
+//     node = new MusicGenericTree(m_rootNode, tr("Genres"), "genres");
+//     node->setDrawArrow(true);
+//     node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
+// #if 0
+//     node = new MusicGenericTree(m_rootNode, tr("Tags"), "tags");
+//     node->setDrawArrow(true);
+//     node->SetData(QVariant::fromValue(gMusicData->all_music->getAllMetadata()));
+// #endif
+//     node = new MusicGenericTree(m_rootNode, tr("Ratings"), "ratings");
+//     node->setDrawArrow(true);
+//     node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
 
-    MetadataPtrList *alltracks = gMusicData->m_all_music->getAllMetadata();
-    auto *compTracks = new MetadataPtrList;
-    m_deleteList.append(compTracks);
+//     node = new MusicGenericTree(m_rootNode, tr("Years"), "years");
+//     node->setDrawArrow(true);
+//     node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
 
-    for (int x = 0; x < alltracks->count(); x++)
-    {
-        MusicMetadata *mdata = alltracks->at(x);
-        if (mdata)
-        {
-            if (mdata->Compilation())
-                compTracks->append(mdata);
-        }
-    }
-    node->SetData(QVariant::fromValue(compTracks));
+//     node = new MusicGenericTree(m_rootNode, tr("Compilations"), "compilations");
+//     node->setDrawArrow(true);
 
-    if (gMusicData->m_all_music->getCDTrackCount())
-    {
-        node = new MusicGenericTree(m_rootNode, tr("CD - %1").arg(gMusicData->m_all_music->getCDTitle()), "cd");
-        node->setDrawArrow(true);
-        node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllCDMetadata()));
-    }
+//     MetadataPtrList *alltracks = gMusicData->m_all_music->getAllMetadata();
+//     auto *compTracks = new MetadataPtrList;
+//     m_deleteList.append(compTracks);
 
-    node = new MusicGenericTree(m_rootNode, tr("Directory"), "directory");
-    node->setDrawArrow(true);
-    node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
+//     for (int x = 0; x < alltracks->count(); x++)
+//     {
+//         MusicMetadata *mdata = alltracks->at(x);
+//         if (mdata)
+//         {
+//             if (mdata->Compilation())
+//                 compTracks->append(mdata);
+//         }
+//     }
+//     node->SetData(QVariant::fromValue(compTracks));
 
-    node = new MusicGenericTree(m_rootNode, tr("Playlists"), "playlists");
-    node->setDrawArrow(true);
+//     if (gMusicData->m_all_music->getCDTrackCount())
+//     {
+//         node = new MusicGenericTree(m_rootNode, tr("CD - %1").arg(gMusicData->m_all_music->getCDTitle()), "cd");
+//         node->setDrawArrow(true);
+//         node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllCDMetadata()));
+//     }
 
-    node = new MusicGenericTree(m_rootNode, tr("Smart Playlists"), "smartplaylists");
-    node->setDrawArrow(true);
+//     node = new MusicGenericTree(m_rootNode, tr("Directory"), "directory");
+//     node->setDrawArrow(true);
+//     node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
+
+//     node = new MusicGenericTree(m_rootNode, tr("Playlists"), "playlists");
+//     node->setDrawArrow(true);
+
+//     node = new MusicGenericTree(m_rootNode, tr("Smart Playlists"), "smartplaylists");
+//     node->setDrawArrow(true);
 }
 // NOLINTEND(clang-analyzer-cplusplus.NewDeleteLeaks)
 
 void PlaylistEditorView::treeItemClicked(MythUIButtonListItem *item)
 {
-    auto *node = item->GetData().value<MythGenericTree*>();
-    auto *mnode = dynamic_cast<MusicGenericTree*>(node);
+    // dho
+    MythGenericTree *node = item->GetData().value<MythGenericTree*>();
+    MusicGenericTree *mnode = dynamic_cast<MusicGenericTree*>(node);
+
+    // dho
+    // auto *node = item->GetData().value<MythGenericTree*>();
+    // auto *mnode = dynamic_cast<MusicGenericTree*>(node);
 
     if (!mnode || !gPlayer->getCurrentPlaylist() || mnode->getAction() == "error")
         return;
 
     if (mnode->getAction() == "trackid")
     {
-        if (gPlayer->getCurrentPlaylist()->checkTrack(mnode->getInt()))
+        // dho
+        MusicMetadata *mdata = gMusicData->m_all_music->getMetadata(mnode->getInt());
+        if (mdata)
         {
-            // remove track from the current playlist
-            gPlayer->removeTrack(mnode->getInt());
-            mnode->setCheck(MythUIButtonListItem::NotChecked);
+          gPlayer->playFile(*mdata);
         }
-        else if (MusicPlayer::getPlayNow())
-        {
-            gPlayer->addTrack(mnode->getInt(), false);
-            gPlayer->setCurrentTrackPos(gPlayer->getCurrentPlaylist()->getTrackCount() - 1);
-            updateUIPlaylist();
-            mnode->setCheck(MythUIButtonListItem::FullChecked);
-        }
-        else
-        {
-            // add track to the current playlist
-            gPlayer->addTrack(mnode->getInt(), true);
-            mnode->setCheck(MythUIButtonListItem::FullChecked);
-        }
+
+        // dho
+        // if (gPlayer->getCurrentPlaylist()->checkTrack(mnode->getInt()))
+        // {
+        //     // remove track from the current playlist
+        //     gPlayer->removeTrack(mnode->getInt());
+        //     mnode->setCheck(MythUIButtonListItem::NotChecked);
+        // }
+        // else if (MusicPlayer::getPlayNow())
+        // {
+        //     gPlayer->addTrack(mnode->getInt(), false);
+        //     gPlayer->setCurrentTrackPos(gPlayer->getCurrentPlaylist()->getTrackCount() - 1);
+        //     updateUIPlaylist();
+        //     mnode->setCheck(MythUIButtonListItem::FullChecked);
+        // }
+        // else
+        // {
+        //     // add track to the current playlist
+        //     gPlayer->addTrack(mnode->getInt(), true);
+        //     mnode->setCheck(MythUIButtonListItem::FullChecked);
+        // }
     }
     else
         ShowMenu();
@@ -1710,7 +1738,9 @@ void PlaylistEditorView::reloadTree(void)
 
     m_rootNode->deleteAllChildren();
     createRootNode();
-    m_playlistTree->AssignTree(m_rootNode);
+    // dho
+    m_playlistTree->AssignTree(m_rootNode->getChildAt(0));
+    // m_playlistTree->AssignTree(m_rootNode);
 
     restoreTreePosition(route);
 }

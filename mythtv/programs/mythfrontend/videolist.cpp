@@ -236,7 +236,11 @@ static meta_dir_node *AddMetadataToDir(VideoMetadata *metadata,
         insert_chunk = metadata->GetFilename().mid(dir->getFQPath().length());
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
+    QStringList path = insert_chunk.split("/", QString::SkipEmptyParts);
+#else
     QStringList path = insert_chunk.split("/", Qt::SkipEmptyParts);
+#endif
     if (path.size() > 1)
     {
         path.pop_back();
@@ -246,7 +250,7 @@ static meta_dir_node *AddMetadataToDir(VideoMetadata *metadata,
         path.clear();
     }
 
-    for (const auto & part : std::as_const(path))
+    for (const auto & part : qAsConst(path))
     {
         smart_dir_node sdn = start->addSubDir(part, "" , host, prefix);
         start = sdn.get();
@@ -417,6 +421,8 @@ class VideoListImp
         m_metadata.setList(ml);
     }
 
+    unsigned int ltype; // dho
+
   private:
     void sort_view_data(bool flat_list);
     void fillMetadata(metadata_list_type whence);
@@ -462,6 +468,7 @@ MythGenericTree *VideoList::buildVideoList(
     int group_type, const ParentalLevel &parental_level,
     bool include_updirs)
 {
+    m_imp->ltype = ltype; // dho
     return m_imp->buildVideoList(filebrowser, flatlist,
                                  group_type, parental_level, include_updirs);
 }
@@ -946,7 +953,15 @@ void VideoListImp::buildTVList(void)
 void VideoListImp::buildDbList()
 {
     metadata_list ml;
-    VideoMetadataListManager::loadAllFromDatabase(ml);
+
+    // dho
+    if (ltype == 2)
+      VideoMetadataListManager::loadAllFromDatabase(ml, QString("WHERE filename LIKE 'Pre-Code/%'"));
+    else if (ltype == 16)
+      VideoMetadataListManager::loadAllFromDatabase(ml, QString("WHERE filename LIKE 'Horror/%'"));
+    else
+      VideoMetadataListManager::loadAllFromDatabase(ml);
+
     m_metadata.setList(ml);
 
     metadata_view_list mlist;

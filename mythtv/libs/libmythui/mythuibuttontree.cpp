@@ -14,6 +14,7 @@
 // Mythui Headers
 #include "mythmainwindow.h"
 #include "mythgesture.h"
+#include "mythuihelper.h" // dho
 
 MythUIButtonTree::MythUIButtonTree(MythUIType *parent, const QString &name)
     : MythUIType(parent, name)
@@ -44,23 +45,55 @@ void MythUIButtonTree::Init()
 
     m_listTemplate->SetVisible(false);
 
+    // dho
+    if(m_listColumns.size() == 0)
+    {
+        int i = 1;
+        while ( i <= (int)m_numLists )
+        {
+            QString columnname = QString("listcolumn_%1").arg(i);
+            MythUIButtonList *column = dynamic_cast<MythUIButtonList *>(GetChild(columnname));
+            if (column) column->SetVisible(false);
+            m_listColumns.append(column);
+            i++;
+        };
+    };
+
+    // qt5
+    // QStringList widthlist = m_columnWidths.split(',', QString::SkipEmptyParts);
+    // qt6
+    QStringList widthlist = m_columnWidths.split(',', Qt::SkipEmptyParts);
+    int defaultwidth = (m_area.width() - (m_listSpacing * (m_numLists-1))) / m_numLists;
+
     int width = (m_area.width() - (m_listSpacing * (m_numLists - 1))) / m_numLists;
     int height = m_area.height();
+
+    // dho
+    float scalex, scaley;
+    GetMythMainWindow()->GetScalingFactors(scalex, scaley);
+    // GetMythUI()->GetScreenSettings(scalex, scaley);
+    int x = 0;
 
     int i = 0;
 
     while (i < (int)m_numLists)
     {
+        // dho
+        int width = (widthlist.size() == (int)m_numLists) ? (int)widthlist[i].toInt()*scalex : defaultwidth;
+        MythUIButtonList *column = m_listColumns[i];
+        if (!column) column = m_listTemplate;
+
         QString listname = QString("buttontree list %1").arg(i);
         auto *list = new MythUIButtonList(this, listname);
-        list->CopyFrom(m_listTemplate);
+        list->CopyFrom(column); // dho
         list->SetVisible(false);
         list->SetActive(false);
         list->SetCanTakeFocus(false);
-        int x = i * (width + m_listSpacing);
+        // dho int x = i * (width + m_listSpacing);
         MythRect listArea = MythRect(x, 0, width, height);
         list->SetArea(listArea);
         m_buttonlists.append(list);
+        x += width + m_listSpacing; // dho
         i++;
     }
 
@@ -659,6 +692,10 @@ bool MythUIButtonTree::ParseElement(
     else if (element.tagName() == "numlists")
     {
         m_numLists = getFirstText(element).toInt();
+    }
+    else if (element.tagName() == "columnwidths") // dho
+    {
+        m_columnWidths = getFirstText(element);
     }
     else
     {
