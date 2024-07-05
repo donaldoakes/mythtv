@@ -60,9 +60,9 @@ void MythUIButtonTree::Init()
     };
 
     // qt5
-    // QStringList widthlist = m_columnWidths.split(',', QString::SkipEmptyParts);
+    QStringList widthlist = m_columnWidths.split(',', QString::SkipEmptyParts);
     // qt6
-    QStringList widthlist = m_columnWidths.split(',', Qt::SkipEmptyParts);
+    // QStringList widthlist = m_columnWidths.split(',', Qt::SkipEmptyParts);
     int defaultwidth = (m_area.width() - (m_listSpacing * (m_numLists-1))) / m_numLists;
 
     int width = (m_area.width() - (m_listSpacing * (m_numLists - 1))) / m_numLists;

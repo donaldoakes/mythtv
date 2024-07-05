@@ -776,9 +776,9 @@ void PlaylistEditorView::createRootNode(void )
     MusicGenericTree *node = new MusicGenericTree(m_rootNode, tr("Directory"), "directory");
     node->setDrawArrow(true);
     // qt5
-    // node->SetData(qVariantFromValue(gMusicData->m_all_music->getAllMetadata()));
+    node->SetData(qVariantFromValue(gMusicData->m_all_music->getAllMetadata()));
     // qt6
-    node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
+    // node->SetData(QVariant::fromValue(gMusicData->m_all_music->getAllMetadata()));
 
     // dho
 
