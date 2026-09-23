@@ -820,7 +820,7 @@ static void playDisc()
     // Check for DVD
     LOG(VB_MEDIA, LOG_DEBUG, "Checking for DVD medium");
     const bool isDVD = mediaMonitor->IsActive()
-                     ? !mediaMonitor->GetMedias(MEDIATYPE_DVD).isEmpty() 
+                     ? !mediaMonitor->GetMedias(MEDIATYPE_DVD).isEmpty()
                      : MythCDROM::inspectImage(MediaMonitor::defaultDVDdevice()) == MythCDROM::kDVD;
     if (isDVD)
     {
@@ -932,7 +932,7 @@ static void handleGalleryMedia(MythMediaDevice *dev, bool forcePlayback)
     GetMythMainWindow()->GetMainStack()->GetScreenList(screens);
 
 
-    for (const auto *screen : std::as_const(screens))
+    for (const auto *screen : qAsConst(screens)) // dho
     {
         if (qobject_cast<const GalleryThumbView*>(screen))
         {
@@ -1307,6 +1307,18 @@ static void TVMenuCallback(void * /* data */, QString &selection)
     else if (sel == "gallery")
     {
         RunVideoScreen(VideoDialog::DLG_GALLERY);
+    }
+    else if (sel == "gallery2") // dho
+    {
+        RunVideoScreen(VideoDialog::DLG_GALLERY2);
+    }
+    else if (sel == "gallery3") // dho
+    {
+        RunVideoScreen(VideoDialog::DLG_GALLERY3);
+    }
+    else if (sel == "gallery4") // dho
+    {
+        RunVideoScreen(VideoDialog::DLG_GALLERY4);
     }
     else if (sel == "disc_play")
     {

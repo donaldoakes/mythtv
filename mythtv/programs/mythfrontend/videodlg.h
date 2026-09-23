@@ -36,7 +36,7 @@ class VideoDialog : public MythScreenType
   public:
     enum DialogType : std::uint8_t
                     { DLG_DEFAULT = 0, DLG_BROWSER = 0x1, DLG_GALLERY = 0x2,
-                      DLG_TREE = 0x4, DLG_MANAGER = 0x8, dtLast = 0x9 };
+                      DLG_TREE = 0x4, DLG_MANAGER = 0x8, DLG_GALLERY2 = 0x10, DLG_GALLERY3 = 0x20, DLG_GALLERY4 = 0x40, dtLast = 0x80 }; // dho
 
     enum BrowseType : std::uint16_t
                     { BRS_FOLDER = 0, BRS_GENRE = 0x1, BRS_CATEGORY = 0x2,
@@ -85,6 +85,9 @@ class VideoDialog : public MythScreenType
 
     void SwitchTree();
     void SwitchGallery();
+    void SwitchGallery2(); // dho
+    void SwitchGallery3(); // dho
+    void SwitchGallery4(); // dho
     void SwitchBrowse();
     void SwitchManager();
     void SwitchVideoFolderGroup();

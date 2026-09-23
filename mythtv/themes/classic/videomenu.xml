@@ -1,11 +1,5 @@
 <mythmenu name="VIDEO">
 
-   <button>
-     <type>VIDEO_BROWSER</type>
-     <text>Browse Videos</text>
-     <action>BROWSER</action>
-   </button>
-
   <button>
      <type>VIDEO_LIST</type>
      <text>Video List</text>
@@ -14,8 +8,25 @@
 
    <button>
      <type>VIDEO_GALLERY</type>
-     <text>Video Gallery</text>
+     <text>Pre-Code Gallery</text>
      <action>GALLERY</action>
+   </button>
+   <!--
+   <button>
+     <type>VIDEO_GALLERY</type>
+     <text>Horror Gallery</text>
+     <action>GALLERY2</action>
+   </button>
+   -->
+   <button>
+     <type>VIDEO_GALLERY</type>
+     <text>Film Noir Gallery</text>
+     <action>GALLERY3</action>
+   </button>
+   <button>
+     <type>VIDEO_GALLERY</type>
+     <text>Silent Gallery</text>
+     <action>GALLERY4</action>
    </button>
 
    <button>
