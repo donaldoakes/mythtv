@@ -247,7 +247,7 @@ static meta_dir_node *AddMetadataToDir(VideoMetadata *metadata,
         path.clear();
     }
 
-    for (const auto & part : qAsConst(path)) // dho
+    for (const auto & part : std::as_const(path)) // dho
     {
         smart_dir_node sdn = start->addSubDir(part, "" , host, prefix);
         start = sdn.get();

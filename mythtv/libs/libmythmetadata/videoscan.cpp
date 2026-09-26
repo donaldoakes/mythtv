@@ -36,7 +36,7 @@ namespace
                    const QStringList &image_extensions) :
             m_videoFiles(video_files)
         {
-            for (const auto& ext : qAsConst(image_extensions)) // dho
+            for (const auto& ext : std::as_const(image_extensions)) // dho
                 m_imageExt.insert(ext.toLower());
         }
 
@@ -90,7 +90,7 @@ VideoScannerThread::~VideoScannerThread()
 void VideoScannerThread::SetHosts(const QStringList &hosts)
 {
     m_liveSGHosts.clear();
-    for (const auto& host : qAsConst(hosts)) // dho
+    for (const auto& host : std::as_const(hosts)) // dho
         m_liveSGHosts << host.toLower();
 }
 
@@ -164,7 +164,7 @@ void VideoScannerThread::run()
 
     QList<QByteArray> image_types = QImageReader::supportedImageFormats();
     QStringList imageExtensions;
-    for (const auto & format : qAsConst(image_types)) // dho
+    for (const auto & format : std::as_const(image_types)) // dho
         imageExtensions.push_back(QString(format));
 
     LOG(VB_GENERAL, LOG_INFO, QString("Beginning Video Scan."));
@@ -175,7 +175,7 @@ void VideoScannerThread::run()
     if (m_hasGUI)
         SendProgressEvent(counter, (uint)m_directories.size(),
                           tr("Searching for video files"));
-    for (const auto & dir : qAsConst(m_directories)) // dho
+    for (const auto & dir : std::as_const(m_directories)) // dho
     {
         if (!buildFileList(dir, imageExtensions, fs_files))
         {
@@ -206,11 +206,11 @@ void VideoScannerThread::run()
 
         QStringList slist;
 
-        for (int id : qAsConst(m_addList)) // dho
+        for (int id : std::as_const(m_addList)) // dho
             slist << QString("added::%1").arg(id);
-        for (int id : qAsConst(m_movList)) // dho
+        for (int id : std::as_const(m_movList)) // dho
             slist << QString("moved::%1").arg(id);
-        for (int id : qAsConst(m_delList)) // dho
+        for (int id : std::as_const(m_delList)) // dho
             slist << QString("deleted::%1").arg(id);
 
         MythEvent me("VIDEO_LIST_CHANGE", slist);
