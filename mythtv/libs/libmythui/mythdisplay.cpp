@@ -446,6 +446,15 @@ void MythDisplay::ScreenChanged(QScreen *qScreen)
     m_screen = qScreen;
     connect(m_screen, &QScreen::geometryChanged, this, &MythDisplay::GeometryChanged);
     connect(m_screen, &QScreen::physicalDotsPerInchChanged, this, &MythDisplay::PhysicalDPIChanged);
+
+    // Qt substitutes an unnamed placeholder screen when all real outputs
+    // briefly disappear (e.g. an AV receiver switching the HDMI input away).
+    // Re-probing VRR/HDR/DRM state against it is pointless and has been seen
+    // to crash the NVidia NV-CONTROL library. Wait for the real screen to
+    // reappear before re-initialising.
+    if (qScreen->name().isEmpty())
+        return;
+
     Initialise();
     emit DisplayChanged();
 }

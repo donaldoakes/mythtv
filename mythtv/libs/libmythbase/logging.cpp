@@ -27,6 +27,7 @@
 #include "exitcodes.h"
 #include "compat.h"
 
+#include <atomic>
 #include <csignal>
 #include <cstdarg>
 #include <cstdio>
@@ -73,6 +74,12 @@ static QHash<uint64_t, int64_t> logThreadTidHash;
 
 static bool                    logThreadFinished = false;
 static bool                    debugRegistration = false;
+
+// Set once logStop() begins. Once true, no further LOG() calls may touch the
+// static queues/hashes above, since they may already be gone by the time
+// something (e.g. a Qt-internal qWarning fired from a static destructor)
+// tries to log during process teardown.
+static std::atomic<bool>       loggingShuttingDown = false;
 
 struct LogPropagateOpts {
     bool    m_propagate;
@@ -541,6 +548,12 @@ LoggingItem *LoggingItem::create(const char *_file,
 void LogPrintLine( uint64_t mask, LogLevel_t level, const char *file, int line,
                    const char *function, QString message)
 {
+    // Drop messages that arrive after logStop() has started; the logging
+    // statics may no longer be safe to touch (e.g. a late Qt-internal
+    // qWarning fired while global destructors are running at exit).
+    if (loggingShuttingDown.load())
+        return;
+
     int type = kMessage;
     type |= (mask & VB_FLUSH) ? kFlush : 0;
     type |= (mask & VB_STDIO) ? kStandardIO : 0;
@@ -653,6 +666,7 @@ void logStart(const QString& logfile, bool progress, int quiet, int facility,
     if (logThread && logThread->isRunning())
         return;
 
+    loggingShuttingDown = false;
     logLevel = level;
     LOG(VB_GENERAL, LOG_NOTICE, QString("Setting Log Level to LOG_%1")
              .arg(logLevelGetName(logLevel).toUpper()));
@@ -682,6 +696,11 @@ void logStart(const QString& logfile, bool progress, int quiet, int facility,
 /// \brief  Entry point for stopping logging for an application
 void logStop(void)
 {
+    // Stop routing Qt's own internal messages back into LOG() and stop
+    // accepting new log messages before anything else is torn down.
+    qInstallMessageHandler(nullptr);
+    loggingShuttingDown = true;
+
     if (logThread)
     {
         logThread->stop();

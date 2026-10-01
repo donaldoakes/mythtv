@@ -364,6 +364,19 @@ void LogForwardThread::run(void)
         delete logger;
     }
 
+    // gLoggerList caches raw pointers into the loggers just deleted above;
+    // clear it so a stopped-then-restarted thread can't dispatch through
+    // dangling pointers the next time forwardMessage() runs.
+    {
+        QMutexLocker lock(&gLoggerListMutex);
+        if (gLoggerList)
+        {
+            delete gLoggerList->m_itemList;
+            delete gLoggerList;
+            gLoggerList = nullptr;
+        }
+    }
+
     RunEpilog();
 }
 

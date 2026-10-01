@@ -255,6 +255,17 @@ endif()
 set(CONFIG_LIBMPEG2EXTERNAL OFF)
 
 #
+# Optional AddressSanitizer instrumentation for diagnosing memory corruption.
+# Scoped here (after dependency detection) so it doesn't interfere with the
+# find_package/CheckExternalLibraries compiler checks above.
+#
+option(MYTHTV_ENABLE_ASAN "Build MythTV targets with AddressSanitizer (diagnostic use only)" OFF)
+if(MYTHTV_ENABLE_ASAN)
+  add_compile_options(-fsanitize=address -fno-omit-frame-pointer -g)
+  add_link_options(-fsanitize=address)
+endif()
+
+#
 # Include all the MythTV specific directories.
 #
 add_subdirectory(docs)
