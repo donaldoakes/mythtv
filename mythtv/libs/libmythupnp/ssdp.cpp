@@ -3,9 +3,9 @@
 // Created     : Oct. 1, 2005
 //
 // Purpose     : SSDP Discovery Service Implmenetation
-//                                                                            
+//
 // Copyright (c) 2005 David Blain <dblain@mythtv.org>
-//                                          
+//
 // Licensed under the GPL v2 or later, see LICENSE for details
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ void SSDP::Shutdown()
     delete g_pSSDP;
     g_pSSDP = nullptr;
 }
- 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ void SSDP::EnableNotifications( int nServicePort )
 
         LOG(VB_UPNP, LOG_INFO,
             "SSDP::EnableNotifications() - creating new task");
-        m_pNotifyTask = new UPnpNotifyTask( m_nServicePort ); 
+        m_pNotifyTask = new UPnpNotifyTask( m_nServicePort );
 
         // ------------------------------------------------------------------
         // First Send out Notification that we are leaving the network.
@@ -192,7 +192,10 @@ void SSDPReceiver::performSearch(const QString &sST, std::chrono::seconds timeou
 
 static SSDPRequestType ProcessRequestLine(const QString &sLine)
 {
-    static const QRegularExpression k_whitespace {"\\s+"};
+    // Not a function-local static: a shared QRegularExpression here was
+    // observed (via AddressSanitizer) to be use-after-freed when this
+    // function runs on multiple threads, so each call gets its own instance.
+    const QRegularExpression k_whitespace {"\\s+"};
     QStringList tokens = sLine.split(k_whitespace, Qt::SkipEmptyParts);
 
     // ----------------------------------------------------------------------
@@ -274,7 +277,7 @@ static bool ProcessSearchRequest(const QMap<QString, QString> &sHeaders,
     if ((sST == "ssdp:all") || (sST == "upnp:rootdevice"))
     {
         auto *pTask = new UPnpSearchTask(servicePort,
-            peerAddress, peerPort, sST, 
+            peerAddress, peerPort, sST,
             UPnp::g_UPnpDeviceDesc.m_rootDevice.GetUDN());
 
 #if 0
