@@ -192,7 +192,10 @@ void SSDPReceiver::performSearch(const QString &sST, std::chrono::seconds timeou
 
 static SSDPRequestType ProcessRequestLine(const QString &sLine)
 {
-    static const QRegularExpression k_whitespace {"\\s+"};
+    // Not a function-local static: a shared QRegularExpression here was
+    // observed (via AddressSanitizer) to be use-after-freed when this
+    // function runs on multiple threads, so each call gets its own instance.
+    const QRegularExpression k_whitespace {"\\s+"};
     QStringList tokens = sLine.split(k_whitespace, Qt::SkipEmptyParts);
 
     // ----------------------------------------------------------------------
