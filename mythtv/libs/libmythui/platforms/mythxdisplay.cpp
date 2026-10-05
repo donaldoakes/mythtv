@@ -1,6 +1,29 @@
+// Std
+#include <mutex>
+
 // MythTV
 #include "libmythbase/mythlogging.h"
 #include "mythxdisplay.h"
+
+namespace
+{
+/*! \brief Custom Xlib error handler.
+ *
+ * Without this, Xlib's default handler calls exit() for any unhandled X
+ * protocol error (e.g. BadRRCrtc when a CRTC disappears because an AV
+ * receiver switched its HDMI input away and back). That exit() tears down
+ * process statics while other threads (e.g. the logging thread) are still
+ * running, causing a use-after-free crash. Log and continue instead.
+*/
+int MythXErrorHandler(Display *Disp, XErrorEvent *Event)
+{
+    char buf[256];
+    XGetErrorText(Disp, Event->error_code, buf, sizeof(buf));
+    LOG(VB_GENERAL, LOG_ERR, QString("MythXDisplay: X Error: %1 (request %2.%3)")
+        .arg(buf).arg(Event->request_code).arg(Event->minor_code));
+    return 0;
+}
+}
 
 class MythXLocker
 {
