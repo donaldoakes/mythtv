@@ -108,7 +108,7 @@ MythXDisplay::~MythXDisplay()
 */
 bool MythXDisplay::Open(void)
 {
-        static std::once_flag s_handlerInstalled;
+    static std::once_flag s_handlerInstalled;
     std::call_once(s_handlerInstalled, []() { XSetErrorHandler(MythXErrorHandler); });
 
     MythXLocker locker(this);
